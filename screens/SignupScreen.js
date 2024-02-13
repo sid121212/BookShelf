@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,9 +11,52 @@ import { themeColors } from "../theme/Index";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
+import { initializeApp } from '@firebase/app';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+} from "@firebase/auth";
+
+
+
+// firebaseconfig
+const app = initializeApp(firebaseConfig);
+
 
 export default function SignupScreen() {
   const navigation = useNavigation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [user, setUser] = useState(null); // Track user authentication state
+  const [isLogin, setIsLogin] = useState(true);
+
+  const auth = getAuth(app);
+
+  const handleAuthentication = async () => {
+    try {
+      if (user) {
+        // If user is already authenticated, log out
+        console.log("User logged out successfully!");
+        await signOut(auth);
+      } else {
+        // Sign in or sign up
+        await createUserWithEmailAndPassword(auth, email, password);
+        console.log('User created successfully!');
+        navigation.navigate('Login');
+        
+        
+      }
+    } catch (error) {
+      console.error("Authentication error:", error.message);
+    }
+  };
+
+
   return (
     <View style={[styles.container, { backgroundColor: themeColors.bg }]}>
       <SafeAreaView style={styles.safeArea}>
@@ -38,26 +81,30 @@ export default function SignupScreen() {
           <Text style={styles.label}>Full Name</Text>
           <TextInput
             style={styles.input}
-            value="john snow"
+            value={name}
             placeholder="Enter Name"
+            onChangeText={(newText) => setName(newText)}
           />
           <Text style={styles.label}>Email Address</Text>
           <TextInput
             style={styles.input}
-            value="john.snow@gmail.com"
-            placeholder="Enter Name"
+            placeholder="john@gmail.com"
+            value={email}
+            onChangeText={(newText) => setEmail(newText)}
           />
-          <Text style={styles.label}>Mobile Number</Text>
+          <Text style={styles.label}>Password</Text>
           <TextInput
             style={styles.input}
-            value="9283409284"
-            placeholder="Enter Name"
+            secureTextEntry
+            placeholder="password"
+            value={password}
+            onChangeText={(newText) => setPassword(newText)}
           />
           <TouchableOpacity style={styles.signupButton}>
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <Text style={styles.buttonText} onPress={handleAuthentication}>Sign Up</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.loginLink}>Log In ?</Text>
+            <Text style={styles.loginLink}> Log In ?</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -112,7 +159,8 @@ const styles = StyleSheet.create({
   input: {
     padding: 16,
     backgroundColor: "#E6E6FA",
-    color: "gray",
+    color: "black",
+    fontWeight: 600,
     borderRadius: 20,
     marginBottom: 20,
     marginTop: 5,
