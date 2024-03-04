@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogBox } from 'react-native';
-LogBox.ignoreLogs(['Warning: ...']);
+
 import {
   View,
   Text,
@@ -13,61 +12,63 @@ import { themeColors } from "../theme/Index";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
-import { initializeApp } from '@firebase/app';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
-} from "@firebase/auth";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-
-const firebaseconfig = {
-  apiKey: process.env.EXPO_PUBLIC_apiKey,
-  authDomain: process.env.EXPO_PUBLIC_authDomain,
-  projectId: process.env.EXPO_PUBLIC_projectId,
-  storageBucket: process.env.EXPO_PUBLIC_storageBucket,
-  messagingSenderId: process.env.EXPO_PUBLIC_messagingSenderId,
-  appId: process.env.EXPO_PUBLIC_appId,
-  measurementId: process.env.EXPO_PUBLIC_measurementId,
-}
-
-// firebaseconfig
-const app = initializeApp(firebaseconfig);
 
 
 export default function SignupScreen() {
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState("");
+  const [username, setusername] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [user, setUser] = useState(null); // Track user authentication state
   const [isLogin, setIsLogin] = useState(true);
 
-  const auth = getAuth(app);
+  // const auth = getAuth(app);
 
   const handleAuthentication = async () => {
+    console.log(username,password)
     try {
       if (user) {
-        // If user is already authenticated, log out
         console.log("User logged out successfully!");
-        await signOut(auth);
       } else {
-        // Sign in or sign up
-        await createUserWithEmailAndPassword(auth, email, password);
-        console.log('User created successfully!');
-        navigation.navigate('Login');
-        
-        
+        const response = await fetch("https://f983-2405-201-5c09-ab2d-38dd-ec14-10b8-fa69.ngrok-free.app/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+        });
+        console.log(response);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("User signed up successfully");
+          storeData({"username": username, "password": password});
+          // console.log(AsyncStorage.getItem("credentials"));
+          navigation.navigate("Login");
+        } else {
+          throw new Error(data.message);
+        }
       }
     } catch (error) {
       console.error("Authentication error:", error.message);
     }
   };
 
+
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem('credentials', jsonValue);
+    } catch (e) {
+      console.error("User session not set:", error.message);
+    }
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: themeColors.bg }]}>
@@ -97,12 +98,12 @@ export default function SignupScreen() {
             placeholder="Enter Name"
             onChangeText={(newText) => setName(newText)}
           />
-          <Text style={styles.label}>Email Address</Text>
+          <Text style={styles.label}>Username</Text>
           <TextInput
             style={styles.input}
-            placeholder="john@gmail.com"
-            value={email}
-            onChangeText={(newText) => setEmail(newText)}
+            placeholder="john1234"
+            value={username}
+            onChangeText={(newText) => setusername(newText)}
           />
           <Text style={styles.label}>Password</Text>
           <TextInput

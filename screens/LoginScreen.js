@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,57 +11,78 @@ import { themeColors } from "../theme/Index";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ArrowLeftIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
-import { initializeApp } from "@firebase/app";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  onAuthStateChanged,
-  signOut,
-} from "@firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { initializeApp } from "@firebase/app";
+// import {
+//   getAuth,
+//   createUserWithEmailAndPassword,
+//   signInWithEmailAndPassword,
+//   onAuthStateChanged,
+//   signOut,
+// } from "@firebase/auth";
 
-// firebaseconfig
-const firebaseconfig = {
-  apiKey: process.env.EXPO_PUBLIC_apiKey,
-  authDomain: process.env.EXPO_PUBLIC_authDomain,
-  projectId: process.env.EXPO_PUBLIC_projectId,
-  storageBucket: process.env.EXPO_PUBLIC_storageBucket,
-  messagingSenderId: process.env.EXPO_PUBLIC_messagingSenderId,
-  appId: process.env.EXPO_PUBLIC_appId,
-  measurementId: process.env.EXPO_PUBLIC_measurementId,
-}
+// // firebaseconfig
+// const firebaseconfig = {
+//   apiKey: process.env.EXPO_PUBLIC_apiKey,
+//   authDomain: process.env.EXPO_PUBLIC_authDomain,
+//   projectId: process.env.EXPO_PUBLIC_projectId,
+//   storageBucket: process.env.EXPO_PUBLIC_storageBucket,
+//   messagingSenderId: process.env.EXPO_PUBLIC_messagingSenderId,
+//   appId: process.env.EXPO_PUBLIC_appId,
+//   measurementId: process.env.EXPO_PUBLIC_measurementId,
+// }
 
-
-const app = initializeApp(firebaseconfig);
 
 export default function LoginScreen() {
   const navigation = useNavigation();
 
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null); // Track user authentication state
   const [isLogin, setIsLogin] = useState(true);
+  const [authstateChanged, setAuthStateChanged] = useState(false);
 
-  const auth = getAuth(app);
+  
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
+  }, [authstateChanged]);
 
-    return () => unsubscribe();
-  }, [auth]);
+
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem('credentials', jsonValue);
+    } catch (e) {
+      console.error("User session not set:", error.message);
+    }
+  };
 
   const handleAuthentication = async () => {
     try {
       if (user) {
-        // If user is already authenticated, log out
-        console.log("User logged out successfully!");
-        await signOut(auth);
-      } else {
-        // Sign in or sign up
-        await signInWithEmailAndPassword(auth, email, password);
-        console.log("User signed in successfully!");
         navigation.navigate('Dashboard');
+      } else {
+        const response = await fetch("https://f983-2405-201-5c09-ab2d-38dd-ec14-10b8-fa69.ngrok-free.app/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: username,
+            password: password,
+          }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          // console.log("User signed in successfully!",data);
+          setAuthStateChanged(true);
+          storeData({"username": username, "password": password});
+          const user = JSON.parse(await AsyncStorage.getItem('credentials'));
+          console.log("User signed in successfully",user);
+          setUser(user);
+          navigation.navigate("Dashboard");
+        } else {
+          throw new Error(data.message);
+        }
       }
     } catch (error) {
       console.error("Authentication error:", error.message);
@@ -92,9 +113,9 @@ export default function LoginScreen() {
           <Text style={styles.label}>Email Address</Text>
           <TextInput
             style={styles.input}
-            placeholder="email"
-            value={email}
-            onChangeText={(newText) => setEmail(newText)}
+            placeholder="username"
+            value={username}
+            onChangeText={(newText) => setUsername(newText)}
           />
           <Text style={styles.label}>Password</Text>
           <TextInput
@@ -170,7 +191,7 @@ const styles = StyleSheet.create({
   input: {
     padding: 16,
     backgroundColor: "#E6E6FA",
-    color: "gray",
+    color: "black",
     borderRadius: 20,
     marginBottom: 20,
     marginTop: 5,
