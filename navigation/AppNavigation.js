@@ -8,6 +8,8 @@ import SignupScreen from "../screens/SignupScreen";
 import Dashboard from "../screens/Dashboard";
 // import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import BookScreen from "../screens/BookScreen";
+import AddBookScreen from "../screens/AddBookScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -35,6 +37,9 @@ export default function AppNavigation() {
 
         <Stack.Screen name="Dashboard" component={Dashboard} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="BookScreen" component={BookScreen} />
+        <Stack.Screen name="AddBookScreen" component={AddBookScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

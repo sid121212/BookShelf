@@ -44,9 +44,9 @@ const Trending = ({ id, title }) => {
         }}
         className="overflow-visible py-5"
       >
-        {books.map((book) => (
+        {books.map((book,index) => (
           <BookCard
-            key={book.id} // Assuming each book has a unique id
+            key={index} // Assuming each book has a unique id
             id={book.id}
             title={book.title}
             genre={book.genre}

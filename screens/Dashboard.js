@@ -17,6 +17,7 @@ import Trending from "../components/Trending";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ListingAll from "../components/ListingAll";
 
+
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const navigation = useNavigation();
@@ -36,7 +37,6 @@ const Dashboard = () => {
     {
       id: "abc",
       title: "All",
-      
     },
     // {
     //   id: "abcd",
@@ -71,11 +71,24 @@ const Dashboard = () => {
           </View>
         </View>
         <TouchableOpacity
-          style={{ backgroundColor: "yellow" }}
+          style={{ backgroundColor: "#877dfa" }}
+          className="p-3 rounded-full"
+          onPress={()=>navigation.navigate('AddBookScreen')}
+          
+        >
+          <Icon.PlusCircle
+            height={20}
+            width={20}
+            strokeWidth="3"
+            stroke="black"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ backgroundColor: "#877dfa" }}
           className="p-3 rounded-full"
           onPress={handleSignout}
         >
-          <Icon.Sliders height={20} width={20} strokeWidth="3" stroke="black" />
+          <Icon.User height={20} width={20} strokeWidth="3" stroke="black" />
         </TouchableOpacity>
       </View>
 
@@ -88,10 +101,10 @@ const Dashboard = () => {
         <Categories />
 
         <View className="mt-5">
-          {trending?.map((card) => {
+          {trending?.map((card, index) => {
             return (
               <ListingAll
-                key={card.id}
+                key={index}
                 id={card.id}
                 title={card.title}
                 // genre={card.genre}

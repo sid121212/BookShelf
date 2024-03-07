@@ -13,8 +13,9 @@ import { pallete, themeColors } from "../theme/Index";
 import * as Icon from "react-native-feather";
 
 const BookCard = ({title,genre,rating,review,imgUrl,lat,long,price}) => {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={()=> navigation.navigate('BookScreen')}>
       <View
         style={{ shadowColor: themeColors.bg, shadowRadius: 7 }}
         className="mr-6 bg-white rounded-3xl shadow-lg"
