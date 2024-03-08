@@ -16,6 +16,7 @@ import Categories from "../components/Categories";
 import Trending from "../components/Trending";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ListingAll from "../components/ListingAll";
+import CartIcon from "../components/CartIcon";
 
 
 const Dashboard = () => {
@@ -51,6 +52,7 @@ const Dashboard = () => {
 
   return (
     <SafeAreaView>
+      <CartIcon/>
       <StatusBar
         barStyle="dark-content"
         // style={{ backgroundColor: `${themeColors.bg}` }}
@@ -66,7 +68,7 @@ const Dashboard = () => {
             keyboardType="default"
           />
           <View className="flex-row items-center space-x-1 border-0 border-l-2 pl-2 border-l-black-300">
-            <Icon.MapPin height="20" width="20" stroke="black" />
+            <Icon.MapPin height="20" width="20" stroke="black"/>
             <Text className="text-black-600">Thane, Ind</Text>
           </View>
         </View>
@@ -116,7 +118,40 @@ const Dashboard = () => {
             );
           })}
         </View>
+        <View className="mt-5">
+          {trending?.map((card, index) => {
+            return (
+              <ListingAll
+                key={index}
+                id={card.id}
+                title={card.title}
+                // genre={card.genre}
+                // imgUrl={card.imgUrl}
+                // review={card.review}
+                // rating={card.rating}
+                // dist={card.dist}
+              />
+            );
+          })}
+        </View>
+        <View className="mt-5">
+          {trending?.map((card, index) => {
+            return (
+              <ListingAll
+                key={index}
+                id={card.id}
+                title={card.title}
+                // genre={card.genre}
+                // imgUrl={card.imgUrl}
+                // review={card.review}
+                // rating={card.rating}
+                // dist={card.dist}
+              />
+            );
+          })}
+        </View>
       </ScrollView>
+      
     </SafeAreaView>
   );
 };

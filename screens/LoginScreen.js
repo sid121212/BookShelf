@@ -61,7 +61,7 @@ export default function LoginScreen() {
       if (user) {
         navigation.navigate('Dashboard');
       } else {
-        const response = await fetch("https://f983-2405-201-5c09-ab2d-38dd-ec14-10b8-fa69.ngrok-free.app/login", {
+        const response = await fetch("https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -73,9 +73,9 @@ export default function LoginScreen() {
         });
         if (response.ok) {
           const data = await response.json();
-          // console.log("User signed in successfully!",data);
+          // console.log("User signed in successfully!",data["user_id"]);
           setAuthStateChanged(true);
-          storeData({"username": username, "password": password});
+          storeData({"user_id":data["user_id"],"username": username, "password": password});
           const user = JSON.parse(await AsyncStorage.getItem('credentials'));
           console.log("User signed in successfully",user);
           setUser(user);
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: themeColors.bg,
   },
   safeArea: {
-    flex: 1,
+    flex: 0.5,
   },
   header: {
     flexDirection: "row",

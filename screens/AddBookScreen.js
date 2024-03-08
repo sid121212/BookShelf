@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, TextInput, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AddBookScreen() {
   const [title, setTitle] = useState("");
@@ -12,17 +12,32 @@ export default function AddBookScreen() {
   const [longitude, setLongitude] = useState("");
   const [price, setPrice] = useState("");
   const navigation = useNavigation();
+  const [userId,setUserId] = useState("");
+
+  useEffect(()=>{
+    const getData = async () => {
+      try {
+        const user = JSON.parse(await AsyncStorage.getItem('credentials'));
+        console.log(user['user_id']);
+        setUserId(user['user_id']);
+      } catch (e) {
+        console.error("User session not set:", error.message);
+      }
+    };
+    getData();
+  },[])
 
   const handleSubmit = async () => {
     try {
       const response = await fetch(
-        "https://f983-2405-201-5c09-ab2d-38dd-ec14-10b8-fa69.ngrok-free.app/addBook",
+        "https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/addBook",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
+            user_id: userId,
             title: title,
             category_id: category,
             reviews: parseInt(reviews),

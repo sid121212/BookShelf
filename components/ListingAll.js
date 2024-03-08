@@ -11,7 +11,7 @@ const ListingAll = ({ id, title }) => {
   useEffect(() => {
     // Call the API and retrieve data
     fetch(
-      "https://f983-2405-201-5c09-ab2d-38dd-ec14-10b8-fa69.ngrok-free.app/allBooks"
+      "https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/allBooks"
     )
       .then((response) => response.json())
       .then((data) => {
@@ -31,8 +31,8 @@ const ListingAll = ({ id, title }) => {
         </View>
 
         <TouchableOpacity>
-          <Text style={{ color: themeColors.bg }} className="font-semibold">
-            See All s
+          <Text style={{ color: themeColors.bg }} className="font-semibold underline">
+            See All
           </Text>
         </TouchableOpacity>
       </View>
