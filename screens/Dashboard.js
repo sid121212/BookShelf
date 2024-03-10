@@ -23,7 +23,7 @@ const Dashboard = () => {
   const [user, setUser] = useState(null);
   const navigation = useNavigation();
 
-  // useEffect(() => {}, []);
+  useEffect(() => {}, []);
 
   const handleSignout = async () => {
     try {

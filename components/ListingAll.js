@@ -16,7 +16,7 @@ const ListingAll = ({ id, title }) => {
       .then((response) => response.json())
       .then((data) => {
         // Set the retrieved books data to state
-        console.log(data);
+        // console.log(data.books[0]._id);
         setBooks(data.books);
       })
       .catch((error) => console.error("Error fetching books:", error));
@@ -47,7 +47,8 @@ const ListingAll = ({ id, title }) => {
       >
         {books.map((book,index) => (
           <BookCard
-            key={index} // Assuming each book has a unique id
+            key={index}
+            book_id={book._id} // Assuming each book has a unique id
             title={book.title}
             genre={book.category}
             imgUrl={book.img}
