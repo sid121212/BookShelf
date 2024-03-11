@@ -18,7 +18,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import ListingAll from "../components/ListingAll";
 import CartIcon from "../components/CartIcon";
 
-
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const navigation = useNavigation();
@@ -26,12 +25,29 @@ const Dashboard = () => {
   useEffect(() => {}, []);
 
   const handleSignout = async () => {
-    try {
-      await AsyncStorage.removeItem("credentials");
-      navigation.navigate("Welcome");
-    } catch (error) {
-      console.error("Error during sign-out:", error.message);
-    }
+    const user = JSON.parse(await AsyncStorage.getItem("credentials"));
+    const url = `https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/emptyCart/?user_id=${user.user_id}`;
+    console.log(url);
+    fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        // if (!response.ok) {
+        //   throw new Error(`HTTP error! Status: ${response.status}`);
+        // }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Cart emptied successfully:", data);
+        AsyncStorage.removeItem("credentials");
+        navigation.navigate("Welcome");
+      })
+      .catch((error) => {
+        console.error("Error emptying cart:", error);
+      });
   };
 
   const trending = [
@@ -52,7 +68,7 @@ const Dashboard = () => {
 
   return (
     <SafeAreaView>
-      <CartIcon/>
+      <CartIcon />
       <StatusBar
         barStyle="dark-content"
         // style={{ backgroundColor: `${themeColors.bg}` }}
@@ -68,15 +84,14 @@ const Dashboard = () => {
             keyboardType="default"
           />
           <View className="flex-row items-center space-x-1 border-0 border-l-2 pl-2 border-l-black-300">
-            <Icon.MapPin height="20" width="20" stroke="black"/>
+            <Icon.MapPin height="20" width="20" stroke="black" />
             <Text className="text-black-600">Thane, Ind</Text>
           </View>
         </View>
         <TouchableOpacity
           style={{ backgroundColor: "#877dfa" }}
           className="p-3 rounded-full"
-          onPress={()=>navigation.navigate('AddBookScreen')}
-          
+          onPress={() => navigation.navigate("AddBookScreen")}
         >
           <Icon.PlusCircle
             height={20}
@@ -151,7 +166,6 @@ const Dashboard = () => {
           })}
         </View>
       </ScrollView>
-      
     </SafeAreaView>
   );
 };

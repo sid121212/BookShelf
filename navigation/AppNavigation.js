@@ -20,7 +20,7 @@ export default function AppNavigation() {
   useEffect(() => {
     const fetchUser = async () => {
       const user = JSON.parse(await AsyncStorage.getItem("credentials"));
-      console.log(user)
+      // console.log(user)
       setUser(user);
     };
     fetchUser();

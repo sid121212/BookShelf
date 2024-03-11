@@ -18,7 +18,7 @@ export default function AddBookScreen() {
     const getData = async () => {
       try {
         const user = JSON.parse(await AsyncStorage.getItem('credentials'));
-        console.log(user['user_id']);
+        // console.log(user['user_id']);
         setUserId(user['user_id']);
       } catch (e) {
         console.error("User session not set:", error.message);

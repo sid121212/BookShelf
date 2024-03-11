@@ -12,6 +12,8 @@ export default function CartScreen() {
   const navigation = useNavigation();
 
   const [cartItems, setcartItems] = useState([]);
+  const [price, setprice] = useState(0);
+  const [deliveryPrice, setdeliveryPrice] = useState(1);
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -25,6 +27,7 @@ export default function CartScreen() {
           const arr = [];
           data.cart.map((cartItem) => {
             const temp = JSON.parse(cartItem);
+            setprice(price+temp.price)
             arr.push(temp);
           });
           // console.log(arr);
@@ -108,15 +111,15 @@ export default function CartScreen() {
       >
         <View className="flex-row justify-between">
           <Text className="text-gray-700">Item</Text>
-          <Text className="text-gray-700">$199</Text>
+          <Text className="text-gray-700">${price}</Text>
         </View>
         <View className="flex-row justify-between">
           <Text className="text-gray-700">Delivery</Text>
-          <Text className="text-gray-700">$1</Text>
+          <Text className="text-gray-700">${deliveryPrice}</Text>
         </View>
         <View className="flex-row justify-between">
           <Text className="text-gray-700 font-extrabold">Subtotal</Text>
-          <Text className="text-gray-700 font-extrabold">$200</Text>
+          <Text className="text-gray-700 font-extrabold">${price+deliveryPrice}</Text>
         </View>
         <View>
           <TouchableOpacity
