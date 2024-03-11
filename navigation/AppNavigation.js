@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import BookScreen from "../screens/BookScreen";
 import AddBookScreen from "../screens/AddBookScreen";
 import CartScreen from "../screens/CartScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -41,6 +42,7 @@ export default function AppNavigation() {
         <Stack.Screen name="BookScreen" component={BookScreen} />
         <Stack.Screen name="AddBookScreen" component={AddBookScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>

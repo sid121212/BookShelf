@@ -14,7 +14,7 @@ import { pallete, themeColors } from "../theme/Index";
 import * as Icon from "react-native-feather";
 import Categories from "../components/Categories";
 import Trending from "../components/Trending";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import ListingAll from "../components/ListingAll";
 import CartIcon from "../components/CartIcon";
 
@@ -24,31 +24,33 @@ const Dashboard = () => {
 
   useEffect(() => {}, []);
 
-  const handleSignout = async () => {
-    const user = JSON.parse(await AsyncStorage.getItem("credentials"));
-    const url = `https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/emptyCart/?user_id=${user.user_id}`;
-    console.log(url);
-    fetch(url, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => {
-        // if (!response.ok) {
-        //   throw new Error(`HTTP error! Status: ${response.status}`);
-        // }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Cart emptied successfully:", data);
-        AsyncStorage.removeItem("credentials");
-        navigation.navigate("Welcome");
-      })
-      .catch((error) => {
-        console.error("Error emptying cart:", error);
-      });
-  };
+  
+
+  // const handleSignout = async () => {
+  //   const user = JSON.parse(await AsyncStorage.getItem("credentials"));
+  //   const url = `https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/emptyCart/?user_id=${user.user_id}`;
+  //   console.log(url);
+  //   fetch(url, {
+  //     method: "DELETE",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((response) => {
+  //       // if (!response.ok) {
+  //       //   throw new Error(`HTTP error! Status: ${response.status}`);
+  //       // }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       console.log("Cart emptied successfully:", data);
+  //       AsyncStorage.removeItem("credentials");
+  //       navigation.navigate("Welcome");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error emptying cart:", error);
+  //     });
+  // };
 
   const trending = [
     {
@@ -103,7 +105,7 @@ const Dashboard = () => {
         <TouchableOpacity
           style={{ backgroundColor: "#877dfa" }}
           className="p-3 rounded-full"
-          onPress={handleSignout}
+          onPress={() => navigation.navigate('Profile')}
         >
           <Icon.User height={20} width={20} strokeWidth="3" stroke="black" />
         </TouchableOpacity>
