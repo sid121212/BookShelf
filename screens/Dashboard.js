@@ -21,51 +21,16 @@ import CartIcon from "../components/CartIcon";
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const navigation = useNavigation();
+  const [searchText,setSearchText] = useState('');
 
   useEffect(() => {}, []);
-
-  
-
-  // const handleSignout = async () => {
-  //   const user = JSON.parse(await AsyncStorage.getItem("credentials"));
-  //   const url = `https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/emptyCart/?user_id=${user.user_id}`;
-  //   console.log(url);
-  //   fetch(url, {
-  //     method: "DELETE",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   })
-  //     .then((response) => {
-  //       // if (!response.ok) {
-  //       //   throw new Error(`HTTP error! Status: ${response.status}`);
-  //       // }
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       console.log("Cart emptied successfully:", data);
-  //       AsyncStorage.removeItem("credentials");
-  //       navigation.navigate("Welcome");
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error emptying cart:", error);
-  //     });
-  // };
 
   const trending = [
     {
       id: "abc",
       title: "All",
     },
-    // {
-    //   id: "abcd",
-    //   title: "All",
-    //   rating: 4,
-    //   review: 2469,
-    //   imgUrl: "../assets/images/ufo.png",
-    //   genre: "self-help",
-    //   dist: 1.4,
-    // },
+    
   ];
 
   return (
@@ -81,9 +46,11 @@ const Dashboard = () => {
         <View className="flex-row flex-1 items-center p-3 rounded-full border border-black-300">
           <Icon.Search height="25" width="25" stroke="black" />
           <TextInput
+            style={{ flex: 1, marginLeft: 5, color: "black" }}
             placeholder="Books | Authors"
-            className="ml-2 flex-1 text-black-600"
             keyboardType="default"
+            onChangeText={(text) => setSearchText(text)}
+            value={searchText}
           />
           <View className="flex-row items-center space-x-1 border-0 border-l-2 pl-2 border-l-black-300">
             <Icon.MapPin height="20" width="20" stroke="black" />
@@ -126,11 +93,7 @@ const Dashboard = () => {
                 key={index}
                 id={card.id}
                 title={card.title}
-                // genre={card.genre}
-                // imgUrl={card.imgUrl}
-                // review={card.review}
-                // rating={card.rating}
-                // dist={card.dist}
+                search={searchText}
               />
             );
           })}
@@ -142,11 +105,6 @@ const Dashboard = () => {
                 key={index}
                 id={card.id}
                 title={card.title}
-                // genre={card.genre}
-                // imgUrl={card.imgUrl}
-                // review={card.review}
-                // rating={card.rating}
-                // dist={card.dist}
               />
             );
           })}
@@ -158,11 +116,6 @@ const Dashboard = () => {
                 key={index}
                 id={card.id}
                 title={card.title}
-                // genre={card.genre}
-                // imgUrl={card.imgUrl}
-                // review={card.review}
-                // rating={card.rating}
-                // dist={card.dist}
               />
             );
           })}

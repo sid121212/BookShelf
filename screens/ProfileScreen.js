@@ -30,27 +30,79 @@ const ProfileScreen = () => {
   //     console.log("Image has been uploaded", file);
   //   }, [file]);
 
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  // const pickImage = async () => {
+  //   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (status !== "granted") {
-      Alert.alert(
-        "Permission Denied",
-        `Sorry, we need camera  
-             roll permission to upload images.`
-      );
-    } else {
-      const result = await ImagePicker.launchImageLibraryAsync();
-      //   const temp = JSON.parse(result)
-      console.log("this", result.assets[0]);
-      var formdata = new FormData();
-      formdata.append("files", {
-        uri: result.assets[0].uri,
-        filename: result.assets[0].fileName,
-        type: result.assets[0].type,
+  //   if (status !== "granted") {
+  //     Alert.alert(
+  //       "Permission Denied",
+  //       `Sorry, we need camera
+  //            roll permission to upload images.`
+  //     );
+  //   } else {
+  //     const result = await ImagePicker.launchImageLibraryAsync();
+  //     //   const temp = JSON.parse(result)
+  //     console.log("this", result.assets[0]);
+  //     var formdata = new FormData();
+  //     formdata.append("files", {
+  //       uri: result.assets[0].uri,
+  //       filename: result.assets[0].fileName,
+  //       type: result.assets[0].type,
+  //     });
+
+  //     setFile(toString(result.assets[0].uri));
+  //   }
+  // };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setSelectedImage(result.uri);
+    }
+  };
+
+  // Function to handle image upload
+  const uploadImage = async () => {
+    if (!selectedImage) {
+      Alert.alert("Please select an image before uploading.");
+      return;
+    }
+
+    // Replace 'your-backend-upload-url' with your actual backend upload endpoint
+    const uploadUrl = "your-backend-upload-url";
+
+    const formData = new FormData();
+    formData.append("image", {
+      uri: selectedImage,
+      name: "image.jpg",
+      type: "image/jpeg",
+    });
+
+    try {
+      const response = await fetch(uploadUrl, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-        
-      setFile(toString(result.assets[0].uri));
+
+      if (response.ok) {
+        Alert.alert("Image uploaded successfully!");
+        // Clear selected image after successful upload
+        setSelectedImage(null);
+      } else {
+        Alert.alert("Failed to upload image. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      Alert.alert("Error uploading image. Please try again later.");
     }
   };
 

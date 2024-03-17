@@ -5,11 +5,12 @@ import { themeColors } from "../theme/Index";
 import * as Icon from "react-native-feather";
 import BookCard from "./BookCard";
 
-const ListingAll = ({ id, title }) => {
+const ListingAll = ({ id, title, search }) => {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
     // Call the API and retrieve data
+    // console.log(search)
     fetch(
       "https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/allBooks"
     )
@@ -21,6 +22,15 @@ const ListingAll = ({ id, title }) => {
       })
       .catch((error) => console.error("Error fetching books:", error));
   }, []);
+
+
+  const filteredBooks = !search? books : books.filter((book) => {
+
+    // Check if the book title or category includes the search text
+    return (book.title && search && book.title.toLowerCase().includes(search.toLowerCase())) || 
+           (book.category && search && book.category.toLowerCase().includes(search.toLowerCase()));
+  });
+
 
   return (
     <View>
@@ -45,7 +55,7 @@ const ListingAll = ({ id, title }) => {
         }}
         className="overflow-visible py-5"
       >
-        {books.map((book,index) => (
+        {filteredBooks.map((book,index) => (
           <BookCard
             key={index}
             book_id={book._id} // Assuming each book has a unique id
