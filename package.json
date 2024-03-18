@@ -34,7 +34,8 @@
     "react-native-uuid": "^2.0.1",
     "reanimated-bottom-sheet": "^1.0.0-alpha.22",
     "expo-image-picker": "~14.7.1",
-    "expo-file-system": "~16.0.8"
+    "expo-file-system": "~16.0.8",
+    "expo-location": "~16.5.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

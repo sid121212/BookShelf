@@ -5,7 +5,7 @@ import { themeColors } from "../theme/Index";
 import * as Icon from "react-native-feather";
 import BookCard from "./BookCard";
 
-const ListingAll = ({ id, title, search }) => {
+const ListingAll = ({ id, title, search, latitude, longitude }) => {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -23,14 +23,46 @@ const ListingAll = ({ id, title, search }) => {
       .catch((error) => console.error("Error fetching books:", error));
   }, []);
 
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the earth in km
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) *
+        Math.cos(deg2rad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c; // Distance in km
+    return d;
+  };
 
-  const filteredBooks = !search? books : books.filter((book) => {
+  const deg2rad = (deg) => {
+    return deg * (Math.PI / 180);
+  };
 
-    // Check if the book title or category includes the search text
-    return (book.title && search && book.title.toLowerCase().includes(search.toLowerCase())) || 
-           (book.category && search && book.category.toLowerCase().includes(search.toLowerCase()));
-  });
+  const filteredBooks = !search
+    ? books
+    : books.filter(
+        (book) =>
+          (book.title &&
+            search &&
+            book.title.toLowerCase().includes(search.toLowerCase())) ||
+          (book.category &&
+            search &&
+            book.category.toLowerCase().includes(search.toLowerCase()))
+      );
 
+  // Sort filtered books based on distance
+  const sortedBooks = filteredBooks
+    ? filteredBooks.sort((a, b) => {
+        const distanceA = calculateDistance(latitude, longitude, a.lat, a.long);
+        const distanceB = calculateDistance(latitude, longitude, b.lat, b.long);
+        console.log(distanceA - distanceB)
+        return distanceA - distanceB;
+      })
+    : [];
 
   return (
     <View>
@@ -41,7 +73,10 @@ const ListingAll = ({ id, title, search }) => {
         </View>
 
         <TouchableOpacity>
-          <Text style={{ color: themeColors.bg }} className="font-semibold underline">
+          <Text
+            style={{ color: themeColors.bg }}
+            className="font-semibold underline"
+          >
             See All
           </Text>
         </TouchableOpacity>
@@ -55,7 +90,7 @@ const ListingAll = ({ id, title, search }) => {
         }}
         className="overflow-visible py-5"
       >
-        {filteredBooks.map((book,index) => (
+        {sortedBooks.map((book, index) => (
           <BookCard
             key={index}
             book_id={book._id} // Assuming each book has a unique id
@@ -67,7 +102,6 @@ const ListingAll = ({ id, title, search }) => {
             lat={book.latitude}
             long={book.longitude}
             price={book.price}
-
           />
         ))}
       </ScrollView>

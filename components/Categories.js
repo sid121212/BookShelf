@@ -1,8 +1,11 @@
 import { View, Text, ScrollView, TouchableOpacity, Image } from "react-native";
 import React, { useState, useEffect } from "react";
 
-const Categories = () => {
+const Categories = ({ onSearchTextChange }) => {
     const [activeCategory, setActiveCategory] = useState(false);
+    const handleCategorySelect = (category) => {
+      onSearchTextChange(category);
+    };
   return (
     <View className="mt-4">
       <ScrollView
@@ -39,7 +42,8 @@ const Categories = () => {
           className="flex justify-center items-center mr-6"
         >
           <TouchableOpacity
-            onPress={() => setActiveCategory(true)}
+            // onPress={() => setActiveCategory(true)}
+            onPress={() => handleCategorySelect("Fiction")}
             className="p-2 rounded-full shadow bg-[#d0d0f5] border" 
           >
             <Image
@@ -53,7 +57,8 @@ const Categories = () => {
           className="flex justify-center items-center mr-6"
         >
           <TouchableOpacity
-            onPress={() => setActiveCategory(true)}
+            // onPress={() => setActiveCategory(true)}
+            onPress={() => handleCategorySelect("Self-help")}
             className="p-2 rounded-full shadow bg-[#d0d0f5] border" 
           >
             <Image
@@ -67,7 +72,8 @@ const Categories = () => {
           className="flex justify-center items-center mr-6"
         >
           <TouchableOpacity
-            onPress={() => setActiveCategory(true)}
+            // onPress={() => setActiveCategory(true)}
+            onPress={() => handleCategorySelect("History")}
             className="p-2 rounded-full shadow bg-[#d0d0f5] border" 
           >
             <Image
@@ -81,7 +87,8 @@ const Categories = () => {
           className="flex justify-center items-center mr-6"
         >
           <TouchableOpacity
-            onPress={() => setActiveCategory(true)}
+            // onPress={() => setActiveCategory(true)}
+            onPress={() => handleCategorySelect("Spiritual")}
             className="p-2 rounded-full shadow bg-[#d0d0f5] border" 
           >
             <Image
@@ -95,7 +102,8 @@ const Categories = () => {
           className="flex justify-center items-center mr-6"
         >
           <TouchableOpacity
-            onPress={() => setActiveCategory(true)}
+            // onPress={() => setActiveCategory(true)}
+            onPress={() => handleCategorySelect("Adventure")}
             className="p-2 rounded-full shadow bg-[#d0d0f5] border" 
           >
             <Image
@@ -109,7 +117,8 @@ const Categories = () => {
           className="flex justify-center items-center mr-6"
         >
           <TouchableOpacity
-            onPress={() => setActiveCategory(true)}
+            // onPress={() => setActiveCategory(true)}
+            onPress={() => handleCategorySelect("Comics")}
             className="p-2 rounded-full shadow bg-[#d0d0f5] border" 
           >
             <Image

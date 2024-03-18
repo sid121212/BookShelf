@@ -6,6 +6,7 @@ import {
   Image,
   Text,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import * as Icon from "react-native-feather";
@@ -15,7 +16,8 @@ import * as ImagePicker from "expo-image-picker";
 const ProfileScreen = () => {
   const [user, setUser] = useState(null);
   const navigation = useNavigation();
-  const [file, setFile] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // State to hold selected image URI
+  const [imageUrl, setImageUrl] = useState(null); // State to hold uploaded image URL
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -24,7 +26,71 @@ const ProfileScreen = () => {
       setUser(user);
     };
     fetchUser();
-  }, [file]);
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      console.log(result.assets[0].uri);
+      setSelectedImage(result.assets[0].uri); // Set selected image URI
+    }
+  };
+
+  const uploadImage = async () => {
+    if (!selectedImage) {
+      Alert.alert("Please select an image before uploading.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("image", {
+      uri: selectedImage,
+      name: "image.jpg",
+      type: "image/jpeg",
+    });
+
+    try {
+      // Replace 'your-backend-upload-url' with your actual backend upload endpoint
+      const response = await fetch("your-backend-upload-url", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      if (response.ok) {
+        const imageUrl = await response.text(); // Extract image URL from response
+        setImageUrl(imageUrl); // Set uploaded image URL
+        Alert.alert("Image uploaded successfully!");
+        // Now you can save this imageUrl to your database
+      } else {
+        Alert.alert("Failed to upload image. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      Alert.alert("Error uploading image. Please try again later.");
+    }
+  };
+
+  // const [user, setUser] = useState(null);
+  // const navigation = useNavigation();
+  // const [file, setFile] = useState(null);
+  // const [error, setError] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     const user = JSON.parse(await AsyncStorage.getItem("credentials"));
+  //     setUser(user);
+  //   };
+  //   fetchUser();
+  // }, [file]);
 
   //   useEffect(() => {
   //     console.log("Image has been uploaded", file);
@@ -54,57 +120,57 @@ const ProfileScreen = () => {
   //   }
   // };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  // const pickImage = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
 
-    if (!result.cancelled) {
-      setSelectedImage(result.uri);
-    }
-  };
+  //   if (!result.cancelled) {
+  //     setSelectedImage(result.uri);
+  //   }
+  // };
 
-  // Function to handle image upload
-  const uploadImage = async () => {
-    if (!selectedImage) {
-      Alert.alert("Please select an image before uploading.");
-      return;
-    }
+  // // Function to handle image upload
+  // const uploadImage = async () => {
+  //   if (!selectedImage) {
+  //     Alert.alert("Please select an image before uploading.");
+  //     return;
+  //   }
 
-    // Replace 'your-backend-upload-url' with your actual backend upload endpoint
-    const uploadUrl = "your-backend-upload-url";
+  //   // Replace 'your-backend-upload-url' with your actual backend upload endpoint
+  //   const uploadUrl = "your-backend-upload-url";
 
-    const formData = new FormData();
-    formData.append("image", {
-      uri: selectedImage,
-      name: "image.jpg",
-      type: "image/jpeg",
-    });
+  //   const formData = new FormData();
+  //   formData.append("image", {
+  //     uri: selectedImage,
+  //     name: "image.jpg",
+  //     type: "image/jpeg",
+  //   });
 
-    try {
-      const response = await fetch(uploadUrl, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+  //   try {
+  //     const response = await fetch(uploadUrl, {
+  //       method: "POST",
+  //       body: formData,
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //       },
+  //     });
 
-      if (response.ok) {
-        Alert.alert("Image uploaded successfully!");
-        // Clear selected image after successful upload
-        setSelectedImage(null);
-      } else {
-        Alert.alert("Failed to upload image. Please try again later.");
-      }
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      Alert.alert("Error uploading image. Please try again later.");
-    }
-  };
+  //     if (response.ok) {
+  //       Alert.alert("Image uploaded successfully!");
+  //       // Clear selected image after successful upload
+  //       setSelectedImage(null);
+  //     } else {
+  //       Alert.alert("Failed to upload image. Please try again later.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error uploading image:", error);
+  //     Alert.alert("Error uploading image. Please try again later.");
+  //   }
+  // };
 
   const handleSignout = async () => {
     const user = JSON.parse(await AsyncStorage.getItem("credentials"));
@@ -137,9 +203,9 @@ const ProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={{ flexDirection: "row", marginTop: 15 }}>
           <TouchableOpacity onPress={pickImage}>
-            {file ? (
+            {selectedImage ? (
               <Image
-                source={{ uri: file }}
+                source={{ uri: selectedImage }}
                 style={{ width: 80, height: 80, borderRadius: 40 }}
               />
             ) : (
@@ -166,7 +232,6 @@ const ProfileScreen = () => {
           </View>
         </View>
       </View>
-
       <View style={styles.userInfoSection}>
         <View style={styles.row}>
           <Icon.MapPin name="map-marker-radius" color="#777777" size={20} />
@@ -207,43 +272,29 @@ const ProfileScreen = () => {
         </View>
       </View>
 
-      <View style={styles.menuWrapper}>
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.menuItem}>
-            <Icon.Heart name="heart-outline" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Your Favorites</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.menuItem}>
-            <Icon.CreditCard name="credit-card" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Payment</Text>
-          </View>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={uploadImage}>
+        <View style={styles.menuItem}>
+          <Icon.UploadCloud name="upload" color="#FF6347" size={25} />
+          <Text style={styles.menuItemText}>Upload Image</Text>
+        </View>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.menuItem}>
-            <Icon.HelpCircle
-              name="account-check-outline"
-              color="#FF6347"
-              size={25}
-            />
-            <Text style={styles.menuItemText}>Support</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleSignout}>
-          <View style={styles.menuItem}>
-            <Icon.LogOut name="share-outline" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Sign Out</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <View style={styles.menuItem}>
-            <Icon.Settings name="settings-outline" color="#FF6347" size={25} />
-            <Text style={styles.menuItemText}>Settings</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={handleSignout}>
+        <View style={styles.menuItem}>
+          <Icon.LogOut name="share-outline" color="#FF6347" size={25} />
+          <Text style={styles.menuItemText}>Sign Out</Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => {}}>
+        <View style={styles.menuItem}>
+          <Icon.HelpCircle
+            name="account-check-outline"
+            color="#FF6347"
+            size={25}
+          />
+          <Text style={styles.menuItemText}>Support</Text>
+        </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };

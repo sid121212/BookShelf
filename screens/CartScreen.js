@@ -10,14 +10,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function CartScreen() {
   //   const restaurant = featured.restaurants[0];
   const navigation = useNavigation();
-
+  const [cartUpdated, setCartUpdated] = useState(false);
   const [cartItems, setcartItems] = useState([]);
   const [price, setprice] = useState(0);
   const [deliveryPrice, setdeliveryPrice] = useState(1);
+  const [user,setUser] = useState(null);
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
         const user = JSON.parse(await AsyncStorage.getItem("credentials"));
+        setUser(user);
         const response = await fetch(
           `https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/getCart/${user.user_id}`
         );
@@ -38,7 +41,31 @@ export default function CartScreen() {
       }
     };
     fetchCartItems();
-  }, []);
+  }, [cartUpdated]);
+
+
+
+  const handleRemoveFromCart = async (book_id) => {
+    console.log(book_id);
+    try {
+      const response = await fetch(`https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/deleteCart?user_id=${user.user_id}&object_id=${book_id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        setCartUpdated(prev => !prev);
+        console.log("Item deleted successfully:", data);
+      } else {
+        throw new Error('Failed to delete item from cart');
+      }
+    } catch (error) {
+      console.error('Error deleting item from cart:', error);
+    }
+  }
 
   return (
     <SafeAreaView className=" bg-white flex-1">
@@ -77,6 +104,7 @@ export default function CartScreen() {
         className="bg-white pt-5"
       >
         {cartItems.map((item, index) => (
+          
           <View
             key={index}
             className="flex-row items-center space-x-3 py-2 px-4 bg-white rounded-3xl mx-2 mb-3 shadow-md"
@@ -93,6 +121,7 @@ export default function CartScreen() {
             <TouchableOpacity
               className="p-1 rounded-full"
               style={{ backgroundColor: themeColors.bg }}
+              onPress={()=> handleRemoveFromCart(item._id)}
             >
               <Icon.Minus
                 strokeWidth={2}
