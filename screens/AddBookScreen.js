@@ -30,7 +30,7 @@ export default function AddBookScreen() {
   const handleSubmit = async () => {
     try {
       const response = await fetch(
-        "https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/addBook",
+        `${process.env.EXPO_PUBLIC_domain}addBook`,
         {
           method: "POST",
           headers: {

@@ -12,21 +12,38 @@ import { useNavigation } from "@react-navigation/native";
 import * as Icon from "react-native-feather";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
 
 const ProfileScreen = () => {
   const [user, setUser] = useState(null);
   const navigation = useNavigation();
   const [selectedImage, setSelectedImage] = useState(null); // State to hold selected image URI
+  const [selectedFile, setSelectedFile] = useState(null); // State
   const [imageUrl, setImageUrl] = useState(null); // State to hold uploaded image URL
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchUser = async () => {
       const user = JSON.parse(await AsyncStorage.getItem("credentials"));
+      try {
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_domain}profileImage/${user.user_id}`
+        );
+
+        const data = await response.json();
+        // console.log("Data: " + data);
+        const imageUrl = data.img_url;
+        // Set the retrieved profile image URL to state
+        // console.log(imageUrl);
+        setImageUrl(imageUrl);
+      } catch (error) {
+        console.error("Error fetching profile image:", error);
+      }
       setUser(user);
     };
+
     fetchUser();
-  }, []);
+  }, [imageUrl]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -38,143 +55,121 @@ const ProfileScreen = () => {
 
     if (!result.cancelled) {
       console.log(result.assets[0].uri);
-      setSelectedImage(result.assets[0].uri); // Set selected image URI
+      setSelectedFile(result);
+      // setSelectedImage(result.assets[0].uri); // Set selected image URI
     }
   };
 
-  const uploadImage = async () => {
-    if (!selectedImage) {
-      Alert.alert("Please select an image before uploading.");
+  const saveImageToDevice = async () => {
+    if (!selectedFile || !selectedFile.assets || !selectedFile.assets.length) {
+      Alert.alert("No image data found.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("image", {
-      uri: selectedImage,
-      name: "image.jpg",
-      type: "image/jpeg",
-    });
-
     try {
-      // Replace 'your-backend-upload-url' with your actual backend upload endpoint
-      const response = await fetch("your-backend-upload-url", {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      const imageInfo = selectedFile.assets[0];
+      const { uri, fileName } = imageInfo;
+
+      // Define the destination directory where the image will be saved
+      const destDirectory = FileSystem.documentDirectory + "myimages/";
+
+      // Create the destination directory if it doesn't exist
+      await FileSystem.makeDirectoryAsync(destDirectory, {
+        intermediates: true,
       });
 
-      if (response.ok) {
-        const imageUrl = await response.text(); // Extract image URL from response
-        setImageUrl(imageUrl); // Set uploaded image URL
-        Alert.alert("Image uploaded successfully!");
-        // Now you can save this imageUrl to your database
+      // Define the destination path for the image
+      const destPath = destDirectory + fileName;
+
+      // Move the selected image to the destination path
+      await FileSystem.moveAsync({
+        from: uri,
+        to: destPath,
+      });
+
+      // Check if the file exists at the destination
+      const fileInfo = await FileSystem.getInfoAsync(destPath);
+
+      if (fileInfo.exists) {
+        setSelectedImage(destPath);
+        await uploadImageToImgBB(destPath);
+        Alert.alert("Image saved successfully!", `Path: ${destPath}`);
       } else {
-        Alert.alert("Failed to upload image. Please try again later.");
+        Alert.alert("Failed to save image. Please try again later.");
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
-      Alert.alert("Error uploading image. Please try again later.");
+      console.error("Error saving image:", error);
+      Alert.alert("Error saving image. Please try again later.");
     }
   };
 
-  // const [user, setUser] = useState(null);
-  // const navigation = useNavigation();
-  // const [file, setFile] = useState(null);
-  // const [error, setError] = useState(null);
+  const saveImageToDb = async (imgurl) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_domain}profileImage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user.user_id,
+            img_url: imgurl,
+          }),
+        }
+      );
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const user = JSON.parse(await AsyncStorage.getItem("credentials"));
-  //     setUser(user);
-  //   };
-  //   fetchUser();
-  // }, [file]);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Image uploaded to Db:", data);
+        // Handle the response from the server as needed
+      } else {
+        console.error("Failed to upload image to Db. Status:", response);
+        // Handle the error response from the server
+      }
+    } catch (error) {
+      console.error("Error uploading image to Db:", error);
+      // Handle the error
+    }
+  };
 
-  //   useEffect(() => {
-  //     console.log("Image has been uploaded", file);
-  //   }, [file]);
+  const uploadImageToImgBB = async (imagePath) => {
+    try {
+      const formData = new FormData();
+      formData.append("image", {
+        uri: imagePath,
+        name: "image.jpg",
+        type: "image/jpeg",
+      });
 
-  // const pickImage = async () => {
-  //   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const response = await fetch(
+        `https://api.imgbb.com/1/upload?expiration=600&key=${process.env.EXPO_PUBLIC_imagebb_apiKey}`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
-  //   if (status !== "granted") {
-  //     Alert.alert(
-  //       "Permission Denied",
-  //       `Sorry, we need camera
-  //            roll permission to upload images.`
-  //     );
-  //   } else {
-  //     const result = await ImagePicker.launchImageLibraryAsync();
-  //     //   const temp = JSON.parse(result)
-  //     console.log("this", result.assets[0]);
-  //     var formdata = new FormData();
-  //     formdata.append("files", {
-  //       uri: result.assets[0].uri,
-  //       filename: result.assets[0].fileName,
-  //       type: result.assets[0].type,
-  //     });
-
-  //     setFile(toString(result.assets[0].uri));
-  //   }
-  // };
-
-  // const pickImage = async () => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-
-  //   if (!result.cancelled) {
-  //     setSelectedImage(result.uri);
-  //   }
-  // };
-
-  // // Function to handle image upload
-  // const uploadImage = async () => {
-  //   if (!selectedImage) {
-  //     Alert.alert("Please select an image before uploading.");
-  //     return;
-  //   }
-
-  //   // Replace 'your-backend-upload-url' with your actual backend upload endpoint
-  //   const uploadUrl = "your-backend-upload-url";
-
-  //   const formData = new FormData();
-  //   formData.append("image", {
-  //     uri: selectedImage,
-  //     name: "image.jpg",
-  //     type: "image/jpeg",
-  //   });
-
-  //   try {
-  //     const response = await fetch(uploadUrl, {
-  //       method: "POST",
-  //       body: formData,
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       Alert.alert("Image uploaded successfully!");
-  //       // Clear selected image after successful upload
-  //       setSelectedImage(null);
-  //     } else {
-  //       Alert.alert("Failed to upload image. Please try again later.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error uploading image:", error);
-  //     Alert.alert("Error uploading image. Please try again later.");
-  //   }
-  // };
+      if (response.ok) {
+        const data = await response.json();
+        await saveImageToDb(data.data.url);
+        console.log("Image uploaded to ImgBB:", data.data.url);
+        // Handle the response from ImgBB as needed
+      } else {
+        Alert.alert("Failed to upload image to ImgBB. Please try again later.");
+      }
+    } catch (error) {
+      console.error("Error uploading image to ImgBB:", error);
+      Alert.alert("Error uploading image to ImgBB. Please try again later.");
+    }
+  };
 
   const handleSignout = async () => {
     const user = JSON.parse(await AsyncStorage.getItem("credentials"));
-    const url = `https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/emptyCart/?user_id=${user.user_id}`;
+    const url = `${process.env.EXPO_PUBLIC_domain}emptyCart/?user_id=${user.user_id}`;
     console.log(url);
     fetch(url, {
       method: "DELETE",
@@ -203,9 +198,9 @@ const ProfileScreen = () => {
       <View style={styles.userInfoSection}>
         <View style={{ flexDirection: "row", marginTop: 15 }}>
           <TouchableOpacity onPress={pickImage}>
-            {selectedImage ? (
+            {imageUrl ? (
               <Image
-                source={{ uri: selectedImage }}
+                source={{ uri: imageUrl }}
                 style={{ width: 80, height: 80, borderRadius: 40 }}
               />
             ) : (
@@ -272,7 +267,7 @@ const ProfileScreen = () => {
         </View>
       </View>
 
-      <TouchableOpacity onPress={uploadImage}>
+      <TouchableOpacity onPress={saveImageToDevice}>
         <View style={styles.menuItem}>
           <Icon.UploadCloud name="upload" color="#FF6347" size={25} />
           <Text style={styles.menuItemText}>Upload Image</Text>

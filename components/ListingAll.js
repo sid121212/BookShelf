@@ -12,7 +12,7 @@ const ListingAll = ({ id, title, search, latitude, longitude }) => {
     // Call the API and retrieve data
     // console.log(search)
     fetch(
-      "https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/allBooks"
+      `${process.env.EXPO_PUBLIC_domain}allBooks`
     )
       .then((response) => response.json())
       .then((data) => {

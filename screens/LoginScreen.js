@@ -57,11 +57,12 @@ export default function LoginScreen() {
   };
 
   const handleAuthentication = async () => {
+    console.log(`${process.env.EXPO_PUBLIC_domain}login`)
     try {
       if (user) {
         navigation.navigate('Dashboard');
       } else {
-        const response = await fetch("https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/login", {
+        const response = await fetch(`${process.env.EXPO_PUBLIC_domain}login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

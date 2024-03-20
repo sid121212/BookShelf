@@ -34,7 +34,7 @@ export default function SignupScreen() {
       if (user) {
         console.log("User logged out successfully!");
       } else {
-        const response = await fetch("https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/signup", {
+        const response = await fetch(`${process.env.EXPO_PUBLIC_domain}signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

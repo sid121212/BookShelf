@@ -40,7 +40,7 @@ const BookCard = ({
     const fetchCart = async () => {
       try{
         // const user = JSON.parse(await AsyncStorage.getItem("credentials"));
-        const response = await fetch(`https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/checkCartItemInCart?user_id=${user.user_id}&object_id=${book_id}`);
+        const response = await fetch(`${process.env.EXPO_PUBLIC_domain}checkCartItemInCart?user_id=${user.user_id}&object_id=${book_id}`);
         if (response.ok) {
           const data = await response.json();
           console.log("Response:", data.inCart);
@@ -69,7 +69,7 @@ const BookCard = ({
   const handleAddToCart = async () => {
     if (!isAddedToCart) {
       try {
-        const response = await fetch('https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/addCart', {
+        const response = await fetch(`${process.env.EXPO_PUBLIC_domain}addCart`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ const BookCard = ({
       }
     }else {
       try {
-        const response = await fetch(`https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/deleteCart?user_id=${user.user_id}&object_id=${book_id}`, {
+        const response = await fetch(`${process.env.EXPO_PUBLIC_domain}deleteCart?user_id=${user.user_id}&object_id=${book_id}`, {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'

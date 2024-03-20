@@ -22,7 +22,7 @@ export default function CartScreen() {
         const user = JSON.parse(await AsyncStorage.getItem("credentials"));
         setUser(user);
         const response = await fetch(
-          `https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/getCart/${user.user_id}`
+          `${process.env.EXPO_PUBLIC_domain}getCart/${user.user_id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -48,7 +48,7 @@ export default function CartScreen() {
   const handleRemoveFromCart = async (book_id) => {
     console.log(book_id);
     try {
-      const response = await fetch(`https://d83c-2405-201-5c09-ab2d-b411-865c-a274-a9a0.ngrok-free.app/deleteCart?user_id=${user.user_id}&object_id=${book_id}`, {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_domain}deleteCart?user_id=${user.user_id}&object_id=${book_id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
