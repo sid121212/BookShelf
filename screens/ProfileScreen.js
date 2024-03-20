@@ -34,7 +34,7 @@ const ProfileScreen = () => {
         // console.log("Data: " + data);
         const imageUrl = data.img_url;
         // Set the retrieved profile image URL to state
-        // console.log(imageUrl);
+        // console.log("Image Url -> "+imageUrl);
         setImageUrl(imageUrl);
       } catch (error) {
         console.error("Error fetching profile image:", error);
@@ -43,7 +43,7 @@ const ProfileScreen = () => {
     };
 
     fetchUser();
-  }, [imageUrl]);
+  }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -101,7 +101,7 @@ const ProfileScreen = () => {
       });
 
       const response = await fetch(
-        `https://api.imgbb.com/1/upload?expiration=600&key=${process.env.EXPO_PUBLIC_imagebb_apiKey}`,
+        `https://api.imgbb.com/1/upload?key=${process.env.EXPO_PUBLIC_imagebb_apiKey}`,
         {
           method: "POST",
           body: formData,
@@ -164,7 +164,7 @@ const ProfileScreen = () => {
             ) : (
               <Image
                 source={{
-                  uri: "https://i.ibb.co/d6nMPcm/pexels-pixabay-159872.jpg",
+                  uri: "https://i.ibb.co/sCtsP2t/image.jpg",
                 }}
                 style={{ width: 80, height: 80, borderRadius: 40 }}
               />
