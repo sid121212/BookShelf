@@ -55,51 +55,9 @@ const ProfileScreen = () => {
 
     if (!result.cancelled) {
       console.log(result.assets[0].uri);
+      await uploadImageToImgBB(result.assets[0].uri);
       setSelectedFile(result);
       // setSelectedImage(result.assets[0].uri); // Set selected image URI
-    }
-  };
-
-  const saveImageToDevice = async () => {
-    if (!selectedFile || !selectedFile.assets || !selectedFile.assets.length) {
-      Alert.alert("No image data found.");
-      return;
-    }
-
-    try {
-      const imageInfo = selectedFile.assets[0];
-      const { uri, fileName } = imageInfo;
-
-      // Define the destination directory where the image will be saved
-      const destDirectory = FileSystem.documentDirectory + "myimages/";
-
-      // Create the destination directory if it doesn't exist
-      await FileSystem.makeDirectoryAsync(destDirectory, {
-        intermediates: true,
-      });
-
-      // Define the destination path for the image
-      const destPath = destDirectory + fileName;
-
-      // Move the selected image to the destination path
-      await FileSystem.moveAsync({
-        from: uri,
-        to: destPath,
-      });
-
-      // Check if the file exists at the destination
-      const fileInfo = await FileSystem.getInfoAsync(destPath);
-
-      if (fileInfo.exists) {
-        setSelectedImage(destPath);
-        await uploadImageToImgBB(destPath);
-        Alert.alert("Image saved successfully!", `Path: ${destPath}`);
-      } else {
-        Alert.alert("Failed to save image. Please try again later.");
-      }
-    } catch (error) {
-      console.error("Error saving image:", error);
-      Alert.alert("Error saving image. Please try again later.");
     }
   };
 
@@ -266,13 +224,6 @@ const ProfileScreen = () => {
           <Text>Orders</Text>
         </View>
       </View>
-
-      <TouchableOpacity onPress={saveImageToDevice}>
-        <View style={styles.menuItem}>
-          <Icon.UploadCloud name="upload" color="#FF6347" size={25} />
-          <Text style={styles.menuItemText}>Upload Image</Text>
-        </View>
-      </TouchableOpacity>
 
       <TouchableOpacity onPress={handleSignout}>
         <View style={styles.menuItem}>
