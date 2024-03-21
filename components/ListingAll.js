@@ -10,7 +10,7 @@ const ListingAll = ({ id, title, search, latitude, longitude }) => {
 
   useEffect(() => {
     // Call the API and retrieve data
-    console.log(search)
+    console.log(search);
     fetch(`${process.env.EXPO_PUBLIC_domain}allBooks`)
       .then((response) => response.json())
       .then((data) => {
@@ -62,6 +62,14 @@ const ListingAll = ({ id, title, search, latitude, longitude }) => {
       })
     : [];
 
+  function chunkArray(array, chunkSize) {
+    const chunkedArray = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunkedArray.push(array.slice(i, i + chunkSize));
+    }
+    return chunkedArray;
+  }
+
   return (
     <View>
       <View className="flex-row justify-between items-center px-4">
@@ -80,29 +88,32 @@ const ListingAll = ({ id, title, search, latitude, longitude }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingHorizontal: 15,
-        }}
-        className="overflow-visible py-5"
-      >
-        {filteredBooks.map((book, index) => (
-          <BookCard
-            key={index}
-            book_id={book._id} // Assuming each book has a unique id
-            title={book.title}
-            genre={book.category}
-            imgUrl={book.img}
-            review={book.reviews}
-            rating={book.ratings}
-            lat={book.latitude}
-            long={book.longitude}
-            price={book.price}
-          />
-        ))}
-      </ScrollView>
+      {chunkArray(filteredBooks, 2).map((row, rowIndex) => (
+        <ScrollView
+          key={rowIndex} // Key for React elements
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingHorizontal: 15,
+          }}
+          className="overflow-visible py-5"
+        >
+          {row.map((book, index) => (
+            <BookCard
+              key={index} // Key for React elements
+              book_id={book._id} // Assuming each book has a unique id
+              title={book.title}
+              genre={book.category}
+              imgUrl={book.img}
+              review={book.reviews}
+              rating={book.ratings}
+              lat={book.latitude}
+              long={book.longitude}
+              price={book.price}
+            />
+          ))}
+        </ScrollView>
+      ))}
     </View>
   );
 };

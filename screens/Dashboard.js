@@ -7,6 +7,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  RefreshControl,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -26,6 +27,8 @@ const Dashboard = () => {
   const [searchText, setSearchText] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     
@@ -63,6 +66,19 @@ const Dashboard = () => {
       console.error("Error getting location:", error);
       Alert.alert("Error", "Failed to get location. Please try again.");
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true); // Set refreshing to true when refresh starts
+    // Perform actions to refresh data or re-fetch data
+    // After refreshing is completed, set refreshing back to false
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000); // Example timeout, replace with actual refresh logic
+  };
+
+  const handleRefresh = () => {
+    setRefreshKey((prevKey) => prevKey + 1); // Increment refreshKey to trigger re-render
   };
 
   return (
@@ -115,9 +131,20 @@ const Dashboard = () => {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
+        key={refreshKey}
         contentContainerStyle={{
           paddingBottom: 50,
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              onRefresh();
+              handleRefresh();
+               // Trigger re-render after refreshing
+            }}
+          />
+        }
       >
         <Categories onSearchTextChange={handleSearchTextChange} />
 
@@ -135,7 +162,7 @@ const Dashboard = () => {
             );
           })}
         </View>
-        <View className="mt-5">
+        {/* <View className="mt-5">
           {trending?.map((card, index) => {
             return <ListingAll key={index} id={card.id} title={card.title} />;
           })}
@@ -144,7 +171,7 @@ const Dashboard = () => {
           {trending?.map((card, index) => {
             return <ListingAll key={index} id={card.id} title={card.title} />;
           })}
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );
