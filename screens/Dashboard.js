@@ -28,30 +28,8 @@ const Dashboard = () => {
   const [longitude, setLongitude] = useState(0);
 
   useEffect(() => {
-    // const handleLocationPress = async () => {
-    //   try {
-    //     // Request permission to access the user's location
-    //     let { status } = await Location.requestForegroundPermissionsAsync();
-    //     if (status !== "granted") {
-    //       throw new Error("Location permission not granted");
-    //     }
-  
-    //     // Get the user's current location
-    //     let location = await Location.getCurrentPositionAsync({});
-    //     const { latitude, longitude } = location.coords;
-  
-    //     // Use the latitude and longitude as needed
-    //     console.log("Latitude:", latitude);
-    //     setLatitude(latitude);
-    //     setLongitude(longitude);
-    //     console.log("Longitude:", longitude);
-    //   } catch (error) {
-    //     console.error("Error getting location:", error);
-    //     Alert.alert("Error", "Failed to get location. Please try again.");
-    //   }
-    // };
-    // handleLocationPress();
-  }, []);
+    
+  }, [searchText]);
 
   const handleSearchTextChange = (text) => {
     setSearchText(text);

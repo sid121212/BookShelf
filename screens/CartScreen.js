@@ -46,7 +46,7 @@ export default function CartScreen() {
 
 
   const handleRemoveFromCart = async (book_id) => {
-    console.log(book_id);
+    // console.log(book_id);
     try {
       const response = await fetch(`${process.env.EXPO_PUBLIC_domain}deleteCart?user_id=${user.user_id}&object_id=${book_id}`, {
         method: 'DELETE',

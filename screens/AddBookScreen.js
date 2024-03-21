@@ -27,6 +27,7 @@ export default function AddBookScreen() {
   const [userId, setUserId] = useState("");
   const [imageUrl, setImageUrl] = useState(null);
 
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -118,7 +119,7 @@ export default function AddBookScreen() {
     });
 
     if (!result.cancelled) {
-      console.log(result.assets[0].uri);
+      // console.log(result.assets[0].uri);
       await uploadImageToImgBB(result.assets[0].uri);
       // setSelectedFile(result);
       // setSelectedImage(result.assets[0].uri); // Set selected image URI

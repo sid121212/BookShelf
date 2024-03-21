@@ -57,7 +57,7 @@ export default function LoginScreen() {
   };
 
   const handleAuthentication = async () => {
-    console.log(`${process.env.EXPO_PUBLIC_domain}login`)
+    // console.log(`${process.env.EXPO_PUBLIC_domain}login`)
     try {
       if (user) {
         navigation.navigate('Dashboard');

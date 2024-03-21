@@ -10,10 +10,8 @@ const ListingAll = ({ id, title, search, latitude, longitude }) => {
 
   useEffect(() => {
     // Call the API and retrieve data
-    // console.log(search)
-    fetch(
-      `${process.env.EXPO_PUBLIC_domain}allBooks`
-    )
+    console.log(search)
+    fetch(`${process.env.EXPO_PUBLIC_domain}allBooks`)
       .then((response) => response.json())
       .then((data) => {
         // Set the retrieved books data to state
@@ -59,7 +57,7 @@ const ListingAll = ({ id, title, search, latitude, longitude }) => {
     ? filteredBooks.sort((a, b) => {
         const distanceA = calculateDistance(latitude, longitude, a.lat, a.long);
         const distanceB = calculateDistance(latitude, longitude, b.lat, b.long);
-        console.log(distanceA - distanceB)
+        // console.log(distanceA - distanceB)
         return distanceA - distanceB;
       })
     : [];
@@ -90,7 +88,7 @@ const ListingAll = ({ id, title, search, latitude, longitude }) => {
         }}
         className="overflow-visible py-5"
       >
-        {sortedBooks.map((book, index) => (
+        {filteredBooks.map((book, index) => (
           <BookCard
             key={index}
             book_id={book._id} // Assuming each book has a unique id

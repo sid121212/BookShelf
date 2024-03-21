@@ -29,7 +29,7 @@ export default function SignupScreen() {
   // const auth = getAuth(app);
 
   const handleAuthentication = async () => {
-    console.log(username,password)
+    // console.log(username,password)
     try {
       if (user) {
         console.log("User logged out successfully!");
@@ -44,7 +44,7 @@ export default function SignupScreen() {
             password: password,
           }),
         });
-        console.log(response);
+        // console.log(response);
         if (response.ok) {
           const data = await response.json();
           console.log("User signed up successfully");

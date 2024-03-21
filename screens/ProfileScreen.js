@@ -54,7 +54,7 @@ const ProfileScreen = () => {
     });
 
     if (!result.cancelled) {
-      console.log(result.assets[0].uri);
+      // console.log(result.assets[0].uri);
       await uploadImageToImgBB(result.assets[0].uri);
       setSelectedFile(result);
       // setSelectedImage(result.assets[0].uri); // Set selected image URI
@@ -128,7 +128,7 @@ const ProfileScreen = () => {
   const handleSignout = async () => {
     const user = JSON.parse(await AsyncStorage.getItem("credentials"));
     const url = `${process.env.EXPO_PUBLIC_domain}emptyCart/?user_id=${user.user_id}`;
-    console.log(url);
+    // console.log(url);
     fetch(url, {
       method: "DELETE",
       headers: {
