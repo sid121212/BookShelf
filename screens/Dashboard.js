@@ -17,7 +17,7 @@ import * as Icon from "react-native-feather";
 import Categories from "../components/Categories";
 import Trending from "../components/Trending";
 import * as Location from "expo-location";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import ListingAll from "../components/ListingAll";
 import CartIcon from "../components/CartIcon";
 
@@ -29,10 +29,30 @@ const Dashboard = () => {
   const [longitude, setLongitude] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [cartSummary, setCartSummary] = useState({});
+  
 
   useEffect(() => {
-    
-  }, [searchText]);
+    const fetchCartSummary = async () => {
+      try {
+        const user = JSON.parse(await AsyncStorage.getItem("credentials"));
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_domain}getCartSummary/${user.user_id}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        setCartSummary(data);
+        console.log("Cart Summary",data)
+      } catch (error) {
+        console.log("Error fetching CartSummary", error);
+      }
+    };
+    fetchCartSummary();
+  }, [searchText,refreshKey]);
 
   const handleSearchTextChange = (text) => {
     setSearchText(text);
@@ -83,7 +103,7 @@ const Dashboard = () => {
 
   return (
     <SafeAreaView>
-      <CartIcon />
+      <CartIcon cartSummary={cartSummary}/>
       <StatusBar
         barStyle="dark-content"
         // style={{ backgroundColor: `${themeColors.bg}` }}
@@ -141,7 +161,7 @@ const Dashboard = () => {
             onRefresh={() => {
               onRefresh();
               handleRefresh();
-               // Trigger re-render after refreshing
+              // Trigger re-render after refreshing
             }}
           />
         }

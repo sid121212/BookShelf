@@ -6,8 +6,9 @@ import { useNavigation } from "@react-navigation/native";
 
 
 
-export default function CartIcon() {
+export default function CartIcon({cartSummary}) {
     const navigation = useNavigation();
+
   return (
     <View className="absolute bottom-16 w-full z-50">
       <TouchableOpacity
@@ -19,12 +20,12 @@ export default function CartIcon() {
           className="p-2 px-4 rounded-full"
           style={{ backgroundColor: 'yellow' }}
         >
-          <Text className="font-extrabold text-black text-lg">3</Text>
+          <Text className="font-extrabold text-black text-lg">{cartSummary.total_items}</Text>
         </View>
         <Text className="flex-1 text-center font-extrabold text-black text-lg">
           View Cart
         </Text>
-        <Text className="font-extrabold text-white text-lg">${23}</Text>
+        <Text className="font-extrabold text-white text-lg">${cartSummary.total_price}</Text>
       </TouchableOpacity>
     </View>
   );
