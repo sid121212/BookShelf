@@ -219,10 +219,10 @@ const ProfileScreen = () => {
           <Text>₹140.50</Text>
           <Text>Wallet</Text>
         </View>
-        <View style={styles.infoBox}>
+        <TouchableOpacity style={styles.infoBox} onPress={() => {navigation.navigate('Orders')}}>
           <Text>12</Text>
           <Text>Orders</Text>
-        </View>
+        </TouchableOpacity>
       </View>
 
       <TouchableOpacity onPress={handleSignout}>

@@ -12,6 +12,8 @@ import BookScreen from "../screens/BookScreen";
 import AddBookScreen from "../screens/AddBookScreen";
 import CartScreen from "../screens/CartScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import PaymentScreen from "../screens/PaymentScreen";
+import OrderScreen from "../screens/OrderScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +45,8 @@ export default function AppNavigation() {
         <Stack.Screen name="AddBookScreen" component={AddBookScreen} />
         <Stack.Screen name="Cart" component={CartScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Payment" component={PaymentScreen} />
+        <Stack.Screen name="Orders" component={OrderScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>

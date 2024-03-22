@@ -15,6 +15,7 @@ export default function CartScreen() {
   const [price, setprice] = useState(0);
   const [deliveryPrice, setdeliveryPrice] = useState(1);
   const [user,setUser] = useState(null);
+  
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -67,6 +68,8 @@ export default function CartScreen() {
     }
   }
 
+  
+
   return (
     <SafeAreaView className=" bg-white flex-1">
       {/* back button */}
@@ -98,6 +101,7 @@ export default function CartScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+      
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50 }}
@@ -154,6 +158,7 @@ export default function CartScreen() {
           <TouchableOpacity
             style={{ backgroundColor: themeColors.bg }}
             className="p-3 rounded-full"
+            onPress={() => navigation.navigate('Payment')}
           >
             <Text className="text-white text-center font-bold text-lg">
               Rent Now
