@@ -219,12 +219,22 @@ const ProfileScreen = () => {
           <Text>₹140.50</Text>
           <Text>Wallet</Text>
         </View>
-        <TouchableOpacity style={styles.infoBox} onPress={() => {navigation.navigate('Orders')}}>
+        <TouchableOpacity
+          style={styles.infoBox}
+          onPress={() => {
+            navigation.navigate("Orders");
+          }}
+        >
           <Text>12</Text>
-          <Text>Orders</Text>
+          <Text>Your Orders</Text>
         </TouchableOpacity>
       </View>
-
+      <TouchableOpacity onPress={()=>{navigation.navigate('Books')}}>
+        <View style={styles.menuItem}>
+          <Icon.BookOpen name="share-outline" color="#FF6347" size={25} />
+          <Text style={styles.menuItemText}>Your Books</Text>
+        </View>
+      </TouchableOpacity>
       <TouchableOpacity onPress={handleSignout}>
         <View style={styles.menuItem}>
           <Icon.LogOut name="share-outline" color="#FF6347" size={25} />
@@ -238,7 +248,7 @@ const ProfileScreen = () => {
             color="#FF6347"
             size={25}
           />
-          <Text style={styles.menuItemText}>Support</Text>
+          <Text style={styles.menuItemText}>Help</Text>
         </View>
       </TouchableOpacity>
     </SafeAreaView>
