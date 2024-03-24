@@ -7,9 +7,10 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function CartScreen() {
+export default function CartScreen({ navigation, route }) {
+  const { reloadDashboard } = route.params;
   //   const restaurant = featured.restaurants[0];
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const [cartUpdated, setCartUpdated] = useState(false);
   const [cartItems, setcartItems] = useState([]);
   const [price, setprice] = useState(0);
@@ -59,6 +60,7 @@ export default function CartScreen() {
       if (response.ok) {
         const data = await response.json();
         setCartUpdated(prev => !prev);
+        reloadDashboard();
         console.log("Item deleted successfully:", data);
       } else {
         throw new Error('Failed to delete item from cart');

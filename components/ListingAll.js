@@ -5,7 +5,7 @@ import { themeColors } from "../theme/Index";
 import * as Icon from "react-native-feather";
 import BookCard from "./BookCard";
 
-const ListingAll = ({ id, title, search, latitude, longitude }) => {
+const ListingAll = ({ id, title, search, latitude, longitude,  reloadDashboard }) => {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -110,6 +110,7 @@ const ListingAll = ({ id, title, search, latitude, longitude }) => {
               lat={book.latitude}
               long={book.longitude}
               price={book.price}
+              reloadDashboard={reloadDashboard}
             />
           ))}
         </ScrollView>

@@ -6,13 +6,13 @@ import { useNavigation } from "@react-navigation/native";
 
 
 
-export default function CartIcon({cartSummary}) {
+export default function CartIcon({cartSummary,reloadDashboard}) {
     const navigation = useNavigation();
-
+    
   return (
     <View className="absolute bottom-16 w-full z-50">
       <TouchableOpacity
-        onPress={()=> navigation.navigate('Cart')}
+        onPress={() => navigation.navigate('Cart', { reloadDashboard })}
         style={{ backgroundColor: "#877dfa" }}
         className="flex-row justify-between items-center mx-5 rounded-full p-4 py-3 shadow-lg opacity-95"
       >

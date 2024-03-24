@@ -187,19 +187,19 @@ const ProfileScreen = () => {
       </View>
       <View style={styles.userInfoSection}>
         <View style={styles.row}>
-          <Icon.MapPin name="map-marker-radius" color="#777777" size={20} />
+          <Icon.MapPin name="map-marker-radius" color="purple" size={20} />
           <Text style={{ color: "#777777", marginLeft: 20 }}>
             Kolkata, India
           </Text>
         </View>
         <View style={styles.row}>
-          <Icon.Phone name="phone" color="#777777" size={20} />
+          <Icon.Phone name="phone" color="purple" size={20} />
           <Text style={{ color: "#777777", marginLeft: 20 }}>
             +91-900000009
           </Text>
         </View>
         <View style={styles.row}>
-          <Icon.Mail name="email" color="#777777" size={20} />
+          <Icon.Mail name="email" color="purple" size={20} />
           <Text style={{ color: "#777777", marginLeft: 20 }}>
             john_doe@email.com
           </Text>
@@ -231,13 +231,13 @@ const ProfileScreen = () => {
       </View>
       <TouchableOpacity onPress={()=>{navigation.navigate('Books')}}>
         <View style={styles.menuItem}>
-          <Icon.BookOpen name="share-outline" color="#FF6347" size={25} />
+          <Icon.BookOpen name="share-outline" color="purple" size={25} />
           <Text style={styles.menuItemText}>Your Books</Text>
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleSignout}>
         <View style={styles.menuItem}>
-          <Icon.LogOut name="share-outline" color="#FF6347" size={25} />
+          <Icon.LogOut name="share-outline" color="purple" size={25} />
           <Text style={styles.menuItemText}>Sign Out</Text>
         </View>
       </TouchableOpacity>
@@ -245,7 +245,7 @@ const ProfileScreen = () => {
         <View style={styles.menuItem}>
           <Icon.HelpCircle
             name="account-check-outline"
-            color="#FF6347"
+            color="purple"
             size={25}
           />
           <Text style={styles.menuItemText}>Help</Text>

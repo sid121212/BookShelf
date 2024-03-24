@@ -68,7 +68,7 @@ const UserBookScreen = () => {
         contentContainerStyle={{ paddingBottom: 50 }}
         className="bg-white pt-5"
       >
-        {books.map((item, index) => (
+        {books && books.map((item, index) => (
           
           <View
             key={index}
