@@ -21,6 +21,7 @@ const ProfileScreen = () => {
   const [selectedFile, setSelectedFile] = useState(null); // State
   const [imageUrl, setImageUrl] = useState(null); // State to hold uploaded image URL
   const [error, setError] = useState(null);
+  const [orderItemsCount,setOrderItemsCount] = useState(0);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -43,6 +44,26 @@ const ProfileScreen = () => {
     };
 
     fetchUser();
+
+    const fetchOrders = async () => {
+      try {
+        const user = JSON.parse(await AsyncStorage.getItem("credentials"));
+        setUser(user);
+        const response = await fetch(
+          `${process.env.EXPO_PUBLIC_domain}getOrders/${user.user_id}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+        //   console.log(data.orders);
+          
+          setOrderItemsCount(data.orders.length);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    fetchOrders();
+
   }, []);
 
   const pickImage = async () => {
@@ -216,7 +237,7 @@ const ProfileScreen = () => {
             },
           ]}
         >
-          <Text>₹140.50</Text>
+          <Text>$ 140.50</Text>
           <Text>Wallet</Text>
         </View>
         <TouchableOpacity
@@ -225,10 +246,16 @@ const ProfileScreen = () => {
             navigation.navigate("Orders");
           }}
         >
-          <Text>12</Text>
-          <Text>Your Orders</Text>
+          <Text>{orderItemsCount}</Text>
+          <Text>Past Orders</Text>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity>
+        <View style={styles.menuItem}>
+          <Icon.Truck name="share-outline" color="purple" size={25} />
+          <Text style={styles.menuItemText}>Track Orders</Text>
+        </View>
+      </TouchableOpacity>
       <TouchableOpacity onPress={()=>{navigation.navigate('Books')}}>
         <View style={styles.menuItem}>
           <Icon.BookOpen name="share-outline" color="purple" size={25} />

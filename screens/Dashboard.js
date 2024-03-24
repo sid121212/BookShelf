@@ -31,7 +31,6 @@ const Dashboard = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [cartSummary, setCartSummary] = useState({});
   const [cartUpdated, setCartUpdated] = useState(false);
-  
 
   useEffect(() => {
     const fetchCartSummary = async () => {
@@ -53,12 +52,12 @@ const Dashboard = () => {
       }
     };
     fetchCartSummary();
-  }, [searchText,refreshKey,cartUpdated]);
+  }, [searchText, refreshKey, cartUpdated]);
 
   const reloadDashboard = () => {
     // Cart button sync between bookcard and removeCart from cartScreen
     // setRefreshKey((prevKey) => prevKey + 1);
-    setCartUpdated(prev => !prev);
+    setCartUpdated((prev) => !prev);
   };
 
   const handleSearchTextChange = (text) => {
@@ -95,8 +94,6 @@ const Dashboard = () => {
     }
   };
 
-  
-
   const onRefresh = () => {
     setRefreshing(true); // Set refreshing to true when refresh starts
     // Perform actions to refresh data or re-fetch data
@@ -112,7 +109,7 @@ const Dashboard = () => {
 
   return (
     <SafeAreaView>
-      <CartIcon cartSummary={cartSummary} reloadDashboard={reloadDashboard}/>
+      <CartIcon cartSummary={cartSummary} reloadDashboard={reloadDashboard} />
       <StatusBar
         barStyle="dark-content"
         // style={{ backgroundColor: `${themeColors.bg}` }}

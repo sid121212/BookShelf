@@ -71,9 +71,10 @@ const OrderScreen = () => {
         className="bg-white pt-5"
       >
         {orderItems.map((item, index) => (
-          <View
+          <TouchableOpacity
             key={index}
             className="flex-row items-center space-x-3 py-2 px-4 bg-white rounded-3xl mx-2 mb-3 shadow-md"
+            onPress={()=>navigation.navigate('OrderDetail')}
           >
             {/* <Text className="font-bold" style={{ color: themeColors.bg }}>
               1 x
@@ -97,7 +98,7 @@ const OrderScreen = () => {
             >
               {item.status ? "Success" : "Cancelled"}
             </Text>
-          </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
 

@@ -15,6 +15,8 @@ import ProfileScreen from "../screens/ProfileScreen";
 import PaymentScreen from "../screens/PaymentScreen";
 import OrderScreen from "../screens/OrderScreen";
 import UserBookScreen from "../screens/UserBookScreen";
+import TrackOrdersScreen from "../screens/TrackOrderScreen";
+import OrderDetailScreen from "../screens/OrderDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -49,7 +51,9 @@ export default function AppNavigation() {
         <Stack.Screen name="Payment" component={PaymentScreen} />
         <Stack.Screen name="Orders" component={OrderScreen} />
         <Stack.Screen name="Books" component={UserBookScreen} />
-
+        <Stack.Screen name="TrackOrder" component={TrackOrdersScreen} />
+        <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

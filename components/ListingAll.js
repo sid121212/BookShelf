@@ -5,7 +5,14 @@ import { themeColors } from "../theme/Index";
 import * as Icon from "react-native-feather";
 import BookCard from "./BookCard";
 
-const ListingAll = ({ id, title, search, latitude, longitude,  reloadDashboard }) => {
+const ListingAll = ({
+  id,
+  title,
+  search,
+  latitude,
+  longitude,
+  reloadDashboard,
+}) => {
   const [books, setBooks] = useState([]);
 
   useEffect(() => {

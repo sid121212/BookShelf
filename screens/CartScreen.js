@@ -6,6 +6,11 @@ import * as Icon from "react-native-feather";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 export default function CartScreen({ navigation, route }) {
   const { reloadDashboard } = route.params;
@@ -15,8 +20,7 @@ export default function CartScreen({ navigation, route }) {
   const [cartItems, setcartItems] = useState([]);
   const [price, setprice] = useState(0);
   const [deliveryPrice, setdeliveryPrice] = useState(1);
-  const [user,setUser] = useState(null);
-  
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -32,7 +36,7 @@ export default function CartScreen({ navigation, route }) {
           const arr = [];
           data.cart.map((cartItem) => {
             const temp = JSON.parse(cartItem);
-            setprice(price+temp.price)
+            setprice(price + temp.price);
             arr.push(temp);
           });
           // console.log(arr);
@@ -45,32 +49,31 @@ export default function CartScreen({ navigation, route }) {
     fetchCartItems();
   }, [cartUpdated]);
 
-
-
   const handleRemoveFromCart = async (book_id) => {
     // console.log(book_id);
     try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_domain}deleteCart?user_id=${user.user_id}&object_id=${book_id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json'
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_domain}deleteCart?user_id=${user.user_id}&object_id=${book_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      });
-  
+      );
+
       if (response.ok) {
         const data = await response.json();
-        setCartUpdated(prev => !prev);
+        setCartUpdated((prev) => !prev);
         reloadDashboard();
         console.log("Item deleted successfully:", data);
       } else {
-        throw new Error('Failed to delete item from cart');
+        throw new Error("Failed to delete item from cart");
       }
     } catch (error) {
-      console.error('Error deleting item from cart:', error);
+      console.error("Error deleting item from cart:", error);
     }
-  }
-
-  
+  };
 
   return (
     <SafeAreaView className=" bg-white flex-1">
@@ -103,14 +106,13 @@ export default function CartScreen({ navigation, route }) {
           </Text>
         </TouchableOpacity>
       </View>
-      
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 50 }}
         className="bg-white pt-5"
       >
         {cartItems.map((item, index) => (
-          
           <View
             key={index}
             className="flex-row items-center space-x-3 py-2 px-4 bg-white rounded-3xl mx-2 mb-3 shadow-md"
@@ -127,7 +129,7 @@ export default function CartScreen({ navigation, route }) {
             <TouchableOpacity
               className="p-1 rounded-full"
               style={{ backgroundColor: themeColors.bg }}
-              onPress={()=> handleRemoveFromCart(item._id)}
+              onPress={() => handleRemoveFromCart(item._id)}
             >
               <Icon.Minus
                 strokeWidth={2}
@@ -154,13 +156,15 @@ export default function CartScreen({ navigation, route }) {
         </View>
         <View className="flex-row justify-between">
           <Text className="text-gray-700 font-extrabold">Subtotal</Text>
-          <Text className="text-gray-700 font-extrabold">${price+deliveryPrice}</Text>
+          <Text className="text-gray-700 font-extrabold">
+            ${price + deliveryPrice}
+          </Text>
         </View>
         <View>
           <TouchableOpacity
             style={{ backgroundColor: themeColors.bg }}
             className="p-3 rounded-full"
-            onPress={() => navigation.navigate('Payment')}
+            onPress={() => navigation.navigate("Payment")}
           >
             <Text className="text-white text-center font-bold text-lg">
               Rent Now
