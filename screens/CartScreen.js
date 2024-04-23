@@ -34,12 +34,14 @@ export default function CartScreen({ navigation, route }) {
           const data = await response.json();
 
           const arr = [];
+          let newPrice = 0;
           data.cart.map((cartItem) => {
             const temp = JSON.parse(cartItem);
-            setprice(price + temp.price);
+            newPrice = newPrice + temp.price;
             arr.push(temp);
           });
           // console.log(arr);
+          setprice(newPrice);
           setcartItems(arr);
         }
       } catch (e) {

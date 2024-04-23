@@ -121,8 +121,22 @@ const BookCard = ({
     }
   };
 
+  const handlePress = () => {
+    navigation.navigate('BookScreen', {
+      book_id,
+      title,
+      genre,
+      rating,
+      review,
+      imgUrl,
+      lat,
+      long,
+      price,
+    });
+  };
+
   return (
-    <TouchableOpacity onPress={() => navigation.navigate("BookScreen")}>
+    <TouchableOpacity onPress={handlePress}>
       <View
         style={{ shadowColor: themeColors.bg, shadowRadius: 7 }}
         className="mr-6 bg-white rounded-3xl shadow-lg"
