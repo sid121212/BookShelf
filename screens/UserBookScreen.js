@@ -9,8 +9,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const UserBookScreen = () => {
   const navigation = useNavigation();
-  const [user,setUser] = useState(null);
-  const [books,setBooks] = useState()
+  const [user, setUser] = useState(null);
+  const [books, setBooks] = useState();
+  const [reload, setReload] = useState(false);
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -29,7 +30,31 @@ const UserBookScreen = () => {
       }
     };
     fetchCartItems();
-  }, []);
+  }, [reload]);
+
+  const handleRemoveBook = async (book_id) => {
+    try {
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_domain}userBooks/${book_id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setReload((prev) => !prev);
+        console.log("Book deleted successfully");
+      } else {
+        throw new Error("Failed to delete Book from user books");
+      }
+    } catch (error) {
+      console.error("Error deleting item from cart:", error);
+    }
+  };
 
   return (
     <SafeAreaView className=" bg-white flex-1">
@@ -68,35 +93,39 @@ const UserBookScreen = () => {
         contentContainerStyle={{ paddingBottom: 50 }}
         className="bg-white pt-5"
       >
-        {books && books.map((item, index) => (
-          
-          <View
-            key={index}
-            className="flex-row items-center space-x-3 py-2 px-4 bg-white rounded-3xl mx-2 mb-3 shadow-md"
-          >
-            <Text className="font-bold" style={{ color: themeColors.bg }}>
-              1 x
-            </Text>
-            <Image
-              className="h-14 w-14 rounded-full"
-              source={{uri: item.img}}
-            />
-            <Text className="flex-1 font-bold text-gray-700">{item.title}</Text>
-            <Text className="font-semibold text-base">${item.price}</Text>
-            <TouchableOpacity
-              className="p-1 rounded-full"
-              style={{ backgroundColor: themeColors.bg }}
-              
+        {books &&
+          books.map((item, index) => (
+            <View
+              key={index}
+              className="flex-row items-center space-x-3 py-2 px-4 bg-white rounded-3xl mx-2 mb-3 shadow-md"
             >
-              <Icon.Minus
-                strokeWidth={2}
-                height={20}
-                width={20}
-                stroke="white"
+              <Text className="font-bold" style={{ color: themeColors.bg }}>
+                1 x
+              </Text>
+              <Image
+                className="h-14 w-14 rounded-full"
+                source={{ uri: item.img }}
               />
-            </TouchableOpacity>
-          </View>
-        ))}
+              <Text className="flex-1 font-bold text-gray-700">
+                {item.title}
+              </Text>
+              <Text className="font-semibold text-base">${item.price}</Text>
+              <TouchableOpacity
+                className="p-1 rounded-full"
+                style={{ backgroundColor: themeColors.bg }}
+                onPress={() => {
+                  handleRemoveBook(item['_id']);
+                }}
+              >
+                <Icon.Minus
+                  strokeWidth={2}
+                  height={20}
+                  width={20}
+                  stroke="white"
+                />
+              </TouchableOpacity>
+            </View>
+          ))}
       </ScrollView>
 
       {/* dishes */}
